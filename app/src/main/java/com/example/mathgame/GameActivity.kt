@@ -1,5 +1,6 @@
 package com.example.mathgame
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -74,10 +75,20 @@ class GameActivity : AppCompatActivity() {
         }
 
         buttonNext.setOnClickListener {
-            pauseTimer()
+//            pauseTimer()
             resetTimer()
             gameContinue()
             editTextAnswer.setText("")
+
+            if(userLife <= 0){
+                Toast.makeText(applicationContext, "Game Over", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, ResultActivity::class.java)
+                intent.putExtra("score", userScore)
+                startActivity(intent)
+                finish()
+            }else{
+                gameContinue()
+            }
         }
 
     }
@@ -93,7 +104,7 @@ class GameActivity : AppCompatActivity() {
         startTimer()
     }
 
-    fun startTimer(){
+    private fun startTimer(){
         timer = object : CountDownTimer(timeLeftInMillis, 1000){
             override fun onTick(millisUntilFinished: Long) {
                 timeLeftInMillis = millisUntilFinished
@@ -113,8 +124,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     fun updateText(){
-        val remainingtime: Int = (timeLeftInMillis / 1000).toInt()
-        textTime.text = String.format(Locale.getDefault(), "%02d", remainingtime)
+        val remainingTime: Int = (timeLeftInMillis / 1000).toInt()
+        textTime.text = String.format(Locale.getDefault(), "%02d", remainingTime)
     }
 
     fun pauseTimer() {
